@@ -2,38 +2,30 @@
 
 namespace App\Entity;
 
+use App\Repository\JobsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\JobsRepository")
- */
+#[ORM\Entity(repositoryClass: JobsRepository::class)]
 class Jobs
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $creation_date;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $creationDate = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $sent_date;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $sentDate = null;
 
     public function __construct()
     {
-        $this->creation_date = new \DateTimeImmutable();
+        $this->creationDate = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -46,7 +38,7 @@ class Jobs
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -55,24 +47,24 @@ class Jobs
 
     public function getCreationDate(): ?\DateTimeInterface
     {
-        return $this->creation_date;
+        return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTimeInterface $creation_date): self
+    public function setCreationDate(\DateTimeInterface $creationDate): static
     {
-        $this->creation_date = $creation_date;
+        $this->creationDate = $creationDate;
 
         return $this;
     }
 
     public function getSentDate(): ?\DateTimeInterface
     {
-        return $this->sent_date;
+        return $this->sentDate;
     }
 
-    public function setSentDate(?\DateTimeInterface $sent_date): self
+    public function setSentDate(?\DateTimeInterface $sentDate): static
     {
-        $this->sent_date = $sent_date;
+        $this->sentDate = $sentDate;
 
         return $this;
     }

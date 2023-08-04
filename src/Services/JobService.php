@@ -5,14 +5,14 @@ namespace App\Services;
 use App\Entity\Jobs;
 use App\Repository\JobsRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Goutte\Client;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 class JobService
 {
-    const URL = 'https://mentor.openclassrooms.com';
+    const URL = 'https://mentors.openclassrooms.com/fr/jobs';
     /**
      * @var EntityManagerInterface
      */
@@ -47,9 +47,10 @@ class JobService
 
     public function watch()
     {
-        $client = new Client();
+        $client = new HttpBrowser();
         $crawler = $client->request('GET', self::URL);
-        $crawler->filter('.job .title')->each(function (Crawler $node) {
+        $crawler->filter('body > main > section > div > div > ul > li')->each(function (Crawler $node) {
+            dump(trim($node->text()));
             $this->handleJob(trim($node->text()));
         });
     }
@@ -65,7 +66,7 @@ class JobService
 
     public function notify()
     {
-        foreach ($this->jobsRepository->findBy(['sent_date' => null]) as $job) {
+        foreach ($this->jobsRepository->findBy(['sentDate' => null]) as $job) {
             $job->setSentDate(new \DateTimeImmutable());
 
             $this->mailer->send(
